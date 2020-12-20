@@ -8,7 +8,7 @@
         * [决赛数据集](https://open.baai.ac.cn/data-set-detail/MTI2NTE=/Njk=/true) 为国网电力真实场景的安全帽图片（包含没有安全帽的背景图），共计15000张
     * 选手权限
         * 决赛选手无法访问和接触决赛数据集
-        * 决赛选手只能操作`contestant-server`（基于智源提供的`CPU`机器，每位选手提供一台），智源和国网电力操作`baai-client`和`sgcc-client`（基于智源提供的`GPU`机器，两个`client`处于不同的`GPU`机器，每个`client`提供一块`Tesla V100 32GB`），以完成真实场景的联邦学习
+        * 决赛选手只能操作`contestant-server`（基于智源提供的`CPU`机器，每位选手提供一台），智源和国网电力操作`baai-client`和`sgcc-client`（基于智源和国网电力提供的`GPU`机器，两个`client`处于不同的`GPU`机器，每个`client`提供一块`Tesla V100 32GB`），以完成真实场景的联邦学习
         * 决赛选手具体访问`CPU`和`GPU`机器的方式待通知
 * 选手流程：
     * 将新的联邦学习框架跟初赛的数据集和模型结合，于本地跑通整个流程
