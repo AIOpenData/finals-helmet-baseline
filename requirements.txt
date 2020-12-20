@@ -1,0 +1,12 @@
+aiohttp==3.7.3
+fastapi==0.62.0
+Flask==1.1.1
+loguru==0.5.3
+numpy==1.18.1
+Pillow==7.0.0
+python-multipart==0.0.5
+torch==1.7.1
+terminaltables==3.1.0
+torchvision==0.8.2
+tqdm==4.42.1
+uvicorn==0.13.1

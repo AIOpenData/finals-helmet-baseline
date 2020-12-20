@@ -1,0 +1,7 @@
+classes=2
+
+train=/your/data/path/finals_contest_helmet_federal/annotations/train1.json
+valid=/your/data/path/finals_contest_helmet_federal/annotations/val1.json
+test=/your/data/path/finals_contest_helmet_federal/annotations/test.json
+detect=/your/data/path/finals_contest_helmet_federal/annotations/test_image_info.json
+names=/your/data/path/finals_contest_helmet_federal/annotations/train1.json
