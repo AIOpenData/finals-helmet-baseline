@@ -54,7 +54,7 @@ class AsyncRequest:
                             "data": content,
                             "task_name": task_name,
                             "response_data_type": response_data_type,
-                            "request_time": format(time.time() - start_time, '.4f') + "s"
+                            "request_time": format(time.time() - start_time, ".4f") + "s"
                         }
                 elif method == "POST":
                     async with session.post(url=url, data=data, headers=headers) as response:
@@ -74,7 +74,7 @@ class AsyncRequest:
                             "data": content,
                             "task_name": task_name,
                             "response_data_type": response_data_type,
-                            "request_time": format(time.time() - start_time, '.4f') + "s"
+                            "request_time": format(time.time() - start_time, ".4f") + "s"
                         }
             except Exception as e:
                 raise CustomError("task name: {0}, error in request: {1}".format(task_name, e))
@@ -216,46 +216,3 @@ class AsyncRequest:
             "response_data_type": response_data_type,
             "set_time_out": set_time_out
         }
-
-
-if __name__ == "__main__":
-    logger.info("start to execute!")
-    async_request = AsyncRequest()
-    target_url_info_list = [
-        {
-            "url": "http://127.0.0.1:5001/example1",
-            "method": "GET",
-            "data": {
-                "str_param": "Tom"
-            },
-            "task_name": "http://127.0.0.1:5001/example1",
-            "response_data_type": "JSON",
-            "set_time_out": "true"
-        },
-        {
-            "url": "http://127.0.0.1:5001/example2",
-            "method": "POST",
-            "data": {
-                "numpy_bytes_param": CommonUtils.get_pickle_bytes_by_object_func(np.array([1, 2, 3, 4]))
-            },
-            "task_name": "http://127.0.0.1:5001/example2",
-            "response_data_type": "READ",
-            "set_time_out": "false"
-        }
-    ]
-
-    async_request.add_tasks_func(target_url_info_list)
-
-    url_list = ['http://127.0.0.1:5001/example1', 'http://127.0.0.1:5001/example2']
-
-    while True:
-        empty_cnt = 0
-        for url in url_list:
-            if url not in async_request.task_info:
-                empty_cnt += 1
-                print("{} has not been finished!".format(url))
-        if empty_cnt == 0:
-            break
-        time.sleep(1)
-
-    print("async_request task_info: {}\n".format(async_request.task_info))

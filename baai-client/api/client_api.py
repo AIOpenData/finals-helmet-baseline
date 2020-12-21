@@ -1,24 +1,10 @@
-from service.federated.client_service import Client
 from fastapi import APIRouter, File
 from loguru import logger
+from service.federated.client_service import Client
 from utils.common_utils import CommonUtils
 from utils.result_utils import ResultUtils
 
 router = APIRouter()
-
-
-@router.get("/example1")
-def hello():
-    logger.info("Hello, this is client!")
-    return ResultUtils.success(data="<h1>Hello, this is client!</h1>")
-
-
-@router.post("/example2")
-def example2(numpy_bytes_param: bytes = File(...)):
-    logger.info("access example2 (numpy), numpy_bytes_param: {}".format(
-        CommonUtils.get_object_by_pickle_bytes_func(numpy_bytes_param)))
-
-    return ResultUtils.success(data=numpy_bytes_param, media_type="application/octet-stream")
 
 
 @router.get("/federated_train_size")

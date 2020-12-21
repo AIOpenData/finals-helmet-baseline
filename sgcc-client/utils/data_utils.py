@@ -40,7 +40,7 @@ class ImageFolder(Dataset):
     def __getitem__(self, index):
         image_path = self.image_files[index % len(self.image_files)]
         # extract image as PyTorch tensor
-        image = transforms.ToTensor()(Image.open(image_path).convert('RGB'))
+        image = transforms.ToTensor()(Image.open(image_path).convert("RGB"))
         # pad to square resolution
         image, _ = pad_to_square(image, 0)
         # resize
@@ -59,9 +59,9 @@ class ListDataset(Dataset):
         # folder for images
         self.image_file_root = list_path.replace("annotations", "images").split(".json")[0] + "/"
         # image information
-        self.image_files = json_data['images']
+        self.image_files = json_data["images"]
         # label information
-        self.label_files = json_data['annotations']
+        self.label_files = json_data["annotations"]
         self.image_size = image_size
         self.max_objects = 100
         self.augment = augment
@@ -71,10 +71,10 @@ class ListDataset(Dataset):
         self.batch_count = 0
 
     def __getitem__(self, index):
-        image_path = self.image_file_root + self.image_files[index]['file_name']
+        image_path = self.image_file_root + self.image_files[index]["file_name"]
 
         # extract image as PyTorch tensor
-        image = transforms.ToTensor()(Image.open(image_path).convert('RGB'))
+        image = transforms.ToTensor()(Image.open(image_path).convert("RGB"))
 
         # handle images with less than three channels
         if len(image.shape) != 3:
@@ -87,19 +87,19 @@ class ListDataset(Dataset):
         image, pad = pad_to_square(image, 0)
         _, padded_h, padded_w = image.shape
 
-        image_id = self.image_files[index]['id']
+        image_id = self.image_files[index]["id"]
         boxes = []
         for ann in self.label_files:
-            if ann['image_id'] == image_id:
-                cls_name = ann['category_id'] - 1  # start from 0
-                x1 = np.float(ann['bbox'][0]) + pad[0]  # xmin
-                x2 = np.float(ann['bbox'][0] + ann['bbox'][2]) + pad[1]  # xmax
-                y1 = np.float(ann['bbox'][1]) + pad[2]
-                y2 = np.float(ann['bbox'][1] + ann['bbox'][3]) + pad[3]
+            if ann["image_id"] == image_id:
+                cls_name = ann["category_id"] - 1  # start from 0
+                x1 = np.float(ann["bbox"][0]) + pad[0]  # xmin
+                x2 = np.float(ann["bbox"][0] + ann["bbox"][2]) + pad[1]  # xmax
+                y1 = np.float(ann["bbox"][1]) + pad[2]
+                y2 = np.float(ann["bbox"][1] + ann["bbox"][3]) + pad[3]
                 x_center = ((x1 + x2) / 2) / padded_w
                 y_center = ((y1 + y2) / 2) / padded_h
-                w = ann['bbox'][2] / padded_w
-                h = ann['bbox'][3] / padded_h
+                w = ann["bbox"][2] / padded_w
+                h = ann["bbox"][3] / padded_h
                 boxes.append([cls_name, x_center, y_center, w, h])
         boxes = torch.Tensor(boxes)
         targets = torch.zeros((len(boxes), 6))

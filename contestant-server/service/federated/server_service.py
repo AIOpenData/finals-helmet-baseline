@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import pickle
 import time
@@ -22,8 +21,8 @@ class Server(object):
     set_random_seed(args)
 
     # create folders for saving model and log information
-    args.model_folder_path = os.path.join('./save')
-    args.log_folder_path = os.path.join('./log')
+    args.model_folder_path = os.path.join("./save")
+    args.log_folder_path = os.path.join("./log")
 
     if not os.path.exists(args.model_folder_path):
         os.makedirs(args.model_folder_path)
@@ -31,13 +30,13 @@ class Server(object):
         os.makedirs(args.log_folder_path)
 
     # add device, model and log file path arguments
-    args.device = torch.device('cpu')
+    args.device = torch.device("cpu")
 
     args.model_file_path = os.path.join(args.model_folder_path,
-                                        'D_{}_M_{}_SE_{}_CE_{}.pkl'.format(args.dataset, args.model,
+                                        "D_{}_M_{}_SE_{}_CE_{}.pkl".format(args.dataset, args.model,
                                                                            args.server_epoch, args.client_epoch))
     args.log_file_path = os.path.join(args.log_folder_path,
-                                      'D_{}_M_{}_SE_{}_CE_{}.log'.format(args.dataset, args.model,
+                                      "D_{}_M_{}_SE_{}_CE_{}.log".format(args.dataset, args.model,
                                                                          args.server_epoch, args.client_epoch))
 
     # initialize log output configuration
@@ -116,10 +115,10 @@ class Server(object):
         async_request_result_dict = {}
         for url in urls:
             if method == "call_federated_train_size":
-                async_request_result_dict[url] = async_request.task_info[url]['data']['data']
+                async_request_result_dict[url] = async_request.task_info[url]["data"]["data"]
             else:
                 async_request_result_dict[url] = CommonUtils.get_object_by_pickle_bytes_func(
-                    async_request.task_info[url]['data'])
+                    async_request.task_info[url]["data"])
             async_request.destroy_task_func(url)
 
         return async_request_result_dict
@@ -132,7 +131,7 @@ class Server(object):
                                                                                     urls=cls.federated_train_size_urls)
             for federated_train_size_url in cls.federated_train_size_urls:
                 federated_train_size = async_federated_train_size_request_result_dict[federated_train_size_url][
-                    'federated_train_size']
+                    "federated_train_size"]
                 cls.client_ratio_lst.append(federated_train_size)
 
             logger.info("before normalization: client_ratio_lst: {}".format(cls.client_ratio_lst))
@@ -146,10 +145,10 @@ class Server(object):
         with timer("call federated train", logger):
             train_loss = []
             best_epoch = None
-            best_loss = float('inf')
+            best_loss = float("inf")
 
             for epoch in range(1, args.server_epoch + 1):
-                with timer('train for epoch {}/{}'.format(epoch, args.server_epoch), logger):
+                with timer("train for epoch {}/{}".format(epoch, args.server_epoch), logger):
                     federated_train_param_dict = {"server_epoch": CommonUtils.get_pickle_bytes_by_object_func(epoch),
                                                   "server_model_params": CommonUtils.get_pickle_bytes_by_object_func(
                                                       cls.server_model_params)}
@@ -178,7 +177,7 @@ class Server(object):
 
                     cls.server_model_params = client_weight_lst[-1]
 
-                    logger.info('epoch {:3d}, average loss {:.3f}'.format(epoch, avg_loss))
+                    logger.info("epoch {:3d}, average loss {:.3f}".format(epoch, avg_loss))
                     train_loss.append(avg_loss)
 
                     # save the model, loss and epoch with the smallest training average loss for all the epochs

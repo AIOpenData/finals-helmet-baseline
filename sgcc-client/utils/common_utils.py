@@ -30,12 +30,12 @@ class CommonUtils:
     @staticmethod
     def get_json_file_by_object_func(target: object, write_file_path: str):
         """ get the json file by the object """
-        return json.dump(obj=target, fp=open(write_file_path, "w", encoding="utf8"), ensure_ascii=False, indent=5)
+        return json.dump(obj=target, fp=open(write_file_path, mode="w", encoding="utf-8"), ensure_ascii=False, indent=5)
 
     @staticmethod
     def get_object_by_json_file_func(read_file_path: str):
         """ get the object by the json file """
-        return json.load(fp=open(read_file_path, "r", encoding="utf8"))
+        return json.load(fp=open(read_file_path, mode="r", encoding="utf-8"))
 
     @staticmethod
     def get_pickle_bytes_by_object_func(target: object):
@@ -50,9 +50,9 @@ class CommonUtils:
     @staticmethod
     def get_pickle_file_by_object_func(target: object, write_file_path: str):
         """ get the pickled bytes file by the object """
-        return pickle.dump(obj=target, file=open(write_file_path, "wb"))
+        return pickle.dump(obj=target, file=open(write_file_path, mode="wb"))
 
     @staticmethod
     def get_object_by_pickle_file_func(read_file_path: str):
         """ get the object by the pickled bytes file """
-        return pickle.load(file=open(read_file_path, "rb"))
+        return pickle.load(file=open(read_file_path, mode="rb"))

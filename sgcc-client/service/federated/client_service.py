@@ -30,8 +30,8 @@ class Client(object):
     set_random_seed(args)
 
     # create folders for saving model and log information
-    args.model_folder_path = os.path.join('./save')
-    args.log_folder_path = os.path.join('./log')
+    args.model_folder_path = os.path.join("./save")
+    args.log_folder_path = os.path.join("./log")
 
     if not os.path.exists(args.model_folder_path):
         os.makedirs(args.model_folder_path)
@@ -39,18 +39,18 @@ class Client(object):
         os.makedirs(args.log_folder_path)
 
     # add device, model and log file path arguments
-    args.device = torch.device('cuda:0' if (torch.cuda.is_available() and args.gpu != -1) else 'cpu')
+    args.device = torch.device("cuda:0" if (torch.cuda.is_available() and args.gpu != -1) else "cpu")
 
     args.model_file_path = os.path.join(args.model_folder_path,
-                                        'D_{}_M_{}_SE_{}_CE_{}_ID_{}.pkl'.format(args.dataset, args.model,
+                                        "D_{}_M_{}_SE_{}_CE_{}_ID_{}.pkl".format(args.dataset, args.model,
                                                                                  args.server_epoch, args.client_epoch,
                                                                                  args.user_id))
     args.log_file_path = os.path.join(args.log_folder_path,
-                                      'D_{}_M_{}_SE_{}_CE_{}_ID_{}.log'.format(args.dataset, args.model,
+                                      "D_{}_M_{}_SE_{}_CE_{}_ID_{}.log".format(args.dataset, args.model,
                                                                                args.server_epoch, args.client_epoch,
                                                                                args.user_id))
     args.submission_file_path = os.path.join(args.log_folder_path,
-                                             'D_{}_M_{}_SE_{}_CE_{}_ID_{}.json'.format(args.dataset, args.model,
+                                             "D_{}_M_{}_SE_{}_CE_{}_ID_{}.json".format(args.dataset, args.model,
                                                                                        args.server_epoch,
                                                                                        args.client_epoch,
                                                                                        args.user_id))
@@ -102,7 +102,7 @@ class Client(object):
 
         epo_avg_loss = 0.0
         for epo in range(1, args.client_epoch + 1):
-            with timer('federated train for epoch {}/{}, idx {}/{}, epo {}/{}'.format(epoch, args.server_epoch,
+            with timer("federated train for epoch {}/{}, idx {}/{}, epo {}/{}".format(epoch, args.server_epoch,
                                                                                       args.user_id, args.user_num, epo,
                                                                                       args.client_epoch), logger):
                 avg_loss = 0.0
@@ -121,7 +121,7 @@ class Client(object):
                         optimizer.zero_grad()
 
                     if args.verbose and batch_idx % args.log_interval == 0:
-                        log_str = '\nfederated train for [{}/{} ({:.0f}%)]\tloss: {:.6f}\n'.format(
+                        log_str = "\nfederated train for [{}/{} ({:.0f}%)]\tloss: {:.6f}\n".format(
                             batch_idx * len(images), len(cls.federated_train_loader.dataset),
                             100. * batch_idx / len(cls.federated_train_loader), loss.item())
                         metric_table = [["Metrics", *[f"YOLO Layer {i}" for i in range(len(model.yolo_layers))]]]
@@ -142,7 +142,7 @@ class Client(object):
 
                     # update the average training loss for the client based on the batch
                     avg_loss += (loss.item() - avg_loss) / (batch_idx + 1)
-                logger.info('epo {:3d}, average loss {:.3f}'.format(epo, avg_loss))
+                logger.info("epo {:3d}, average loss {:.3f}".format(epo, avg_loss))
 
                 if epo % args.evaluation_interval == 0:
                     # evaluate the model on the validation set
@@ -155,9 +155,9 @@ class Client(object):
 
                 # update the average training loss for the client
                 epo_avg_loss += (avg_loss - epo_avg_loss) / epo
-        logger.info('user id {:3d}, average loss {:.3f}'.format(args.user_id, epo_avg_loss))
+        logger.info("user id {:3d}, average loss {:.3f}".format(args.user_id, epo_avg_loss))
 
-        model = model.to(torch.device('cpu'))
+        model = model.to(torch.device("cpu"))
         client_model_params = cls.get_model_params(model=model)
         cls().test(test_model_params=client_model_params, mode="test")
 
@@ -239,18 +239,18 @@ class Client(object):
             for idx, (image_path, image_detection) in enumerate(zip(image_list, image_detection_list)):
                 # find the image id corresponding to the image path
                 image = np.array(Image.open(image_path))
-                if image_path.split('/')[-1] in cls.detect_namelist:
-                    index = cls.detect_namelist.index(image_path.split('/')[-1])
-                    image_id = cls.detect_json_data['images'][index]['id']
+                if image_path.split("/")[-1] in cls.detect_namelist:
+                    index = cls.detect_namelist.index(image_path.split("/")[-1])
+                    image_id = cls.detect_json_data["images"][index]["id"]
 
                 # draw bounding boxes and labels of image detections
                 if image_detection is not None:
                     # rescale boxes to original image
                     image_detection = rescale_boxes(image_detection, args.image_size, image.shape[:2])
                     for x1, y1, x2, y2, conf, cls_conf, cls_pred in image_detection:
-                        annotation_item_dict = {'image_id': image_id, 'category_id': int(cls_pred) + 1,
-                                                'bbox': [x1.item(), y1.item(), x2.item() - x1.item(),
-                                                         y2.item() - y1.item()], 'score': conf.item()}
+                        annotation_item_dict = {"image_id": image_id, "category_id": int(cls_pred) + 1,
+                                                "bbox": [x1.item(), y1.item(), x2.item() - x1.item(),
+                                                         y2.item() - y1.item()], "score": conf.item()}
                         annotation_list.append(annotation_item_dict)
 
             with timer("writing to {}".format(args.submission_file_path), logger):

@@ -88,7 +88,7 @@ class UpSample(nn.Module):
 
 
 class EmptyLayer(nn.Module):
-    """Placeholder for 'route' and 'shortcut' layers"""
+    """ Placeholder for 'route' and 'shortcut' layers """
 
     def __init__(self):
         super(EmptyLayer, self).__init__()
@@ -253,10 +253,9 @@ class Darknet(nn.Module):
         return yolo_outputs if (targets is None) else (loss, yolo_outputs)
 
     def load_darknet_weights(self, weights_path):
-        """Parses and loads the weights stored in 'weights_path'"""
-
+        """ parses and loads the weights stored in 'weights_path' """
         # open the weights file
-        with open(weights_path, "rb") as f:
+        with open(weights_path, mode="rb") as f:
             header = np.fromfile(f, dtype=np.int32, count=5)  # first five are header values
             self.header_info = header  # needed to write header when saving weights
             self.seen = header[3]  # number of images seen during training
@@ -306,30 +305,25 @@ class Darknet(nn.Module):
                 ptr += num_w
 
     def save_darknet_weights(self, path, cutoff=-1):
-        """
-            @:param path    - path of the new weights file
-            @:param cutoff  - save layers between 0 and cutoff (cutoff = -1 -> all are saved)
-        """
-        fp = open(path, "wb")
-        self.header_info[3] = self.seen
-        self.header_info.tofile(fp)
+        """ save the darknet weights to the weights file """
+        with open(path, mode="wb") as fp:
+            self.header_info[3] = self.seen
+            self.header_info.tofile(fp)
 
-        # iterate through layers
-        for i, (module_def, module) in enumerate(zip(self.module_defs[:cutoff], self.module_list[:cutoff])):
-            if module_def["type"] == "convolutional":
-                conv_layer = module[0]
+            # iterate through layers
+            for i, (module_def, module) in enumerate(zip(self.module_defs[:cutoff], self.module_list[:cutoff])):
+                if module_def["type"] == "convolutional":
+                    conv_layer = module[0]
 
-                # if batch norm, load bn first
-                if module_def["batch_normalize"]:
-                    bn_layer = module[1]
-                    bn_layer.bias.data.cpu().numpy().tofile(fp)
-                    bn_layer.weight.data.cpu().numpy().tofile(fp)
-                    bn_layer.running_mean.data.cpu().numpy().tofile(fp)
-                    bn_layer.running_var.data.cpu().numpy().tofile(fp)
-                # load conv bias
-                else:
-                    conv_layer.bias.data.cpu().numpy().tofile(fp)
-                # load conv weights
-                conv_layer.weight.data.cpu().numpy().tofile(fp)
-
-        fp.close()
+                    # if batch norm, load bn first
+                    if module_def["batch_normalize"]:
+                        bn_layer = module[1]
+                        bn_layer.bias.data.cpu().numpy().tofile(fp)
+                        bn_layer.weight.data.cpu().numpy().tofile(fp)
+                        bn_layer.running_mean.data.cpu().numpy().tofile(fp)
+                        bn_layer.running_var.data.cpu().numpy().tofile(fp)
+                    # load conv bias
+                    else:
+                        conv_layer.bias.data.cpu().numpy().tofile(fp)
+                    # load conv weights
+                    conv_layer.weight.data.cpu().numpy().tofile(fp)
