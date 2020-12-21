@@ -9,7 +9,7 @@
     * 选手权限
         * 决赛选手无法访问和接触决赛数据集
         * 决赛选手只能操作`contestant-server`（基于智源提供的`CPU`机器，每位选手提供一台），智源和国网电力操作`baai-client`和`sgcc-client`（基于智源和国网电力提供的`GPU`机器，两个`client`处于不同的`GPU`机器，每个`client`提供一块`Tesla V100 32GB`），以完成真实场景的联邦学习
-        * 决赛选手具体访问`CPU`和`GPU`机器的方式待通知
+        * 决赛选手完成提交之后，主办方会提供具体访问`CPU`和`GPU`机器的方式
 * 选手流程：
     * 将新的联邦学习框架跟初赛的数据集和模型结合，于本地跑通整个流程
     * 在官网完成zip压缩文件的提交，主办方下载本日最后一次提交，于次日通知选手开始联邦学习
@@ -112,7 +112,7 @@ Python库环境：
 ```
 
 ## 下载地址
-* [决赛安全帽数据集](https://open.baai.ac.cn/data-set-detail/MTI2NTE=/Njk=/true)    
+* [决赛安全帽数据集](https://open.baai.ac.cn/data-set-detail/MTI2NTE=/MzA=/true)    
     * 决赛选手不可访问决赛安全帽数据集，此处给出统计信息说明（周一更新）
 * [yolov3预训练模型](http://dorc-data.ks3-cn-beijing.ksyun.com/2015682aasdf154asdfe5d5aq961fa6eg/weights_yolov3_pre_model/weights.tar.gz)  
     * 当前主要采用`weights`下面的`darknet53.conv.74`
@@ -159,3 +159,21 @@ Python库环境：
 
 ## 实验指标 
 * 国网电力指标：[电力人工智能数据竞赛指标计算方法和自动评测脚本的详细介绍](https://github.com/AIOpenData/baai-federated-learning-baseline-metric)
+
+## 实验结果
+基于默认实验参数，决赛安全帽测试集基于YOLOv3模型的结果： 
+<div class="table">
+<table border="1" cellspacing="0" cellpadding="10" width="100%">
+<thead>
+<tr class="firstHead">  
+<th colspan="1" rowspan="1">false detection rate</th> <th>missed detection rate</th> <th>object detection correct rate</th> <th>sgcc helmet image score</th>
+ </tr>
+</thead>
+<tbody>
+<tr>
+<td>0.7039337474120083</td>
+<td>0.18664383561643835</td> <td>0.6044609665427509</td> <td>0.6163901512767285</td>
+</tr>
+</tbody>
+</table>
+</div>
