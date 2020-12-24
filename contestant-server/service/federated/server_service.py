@@ -1,14 +1,13 @@
 import os
-import pickle
 import time
-import torch
 
-from http_request.async_request import AsyncRequest, start_loop_func
+import torch
+from config.options_conf import args_parser
+from http_request.async_request import AsyncRequest
 from loguru import logger
 from module.models_module import Darknet
-from config.options_conf import args_parser
-from utils.tool_utils import set_random_seed, timer, weights_init_normal
 from utils.common_utils import CommonUtils
+from utils.tool_utils import set_random_seed, timer, weights_init_normal
 
 # arguments parsing
 args = args_parser()
