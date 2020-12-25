@@ -102,7 +102,8 @@ class Server(object):
                 if len(async_request.task_info) != len(urls):
                     async_request_cnt += 1
                     if async_request_cnt % 600 == 0:
-                        logger.info("async request for {} times, {} minutes, not finished!".format(async_request_cnt, async_request_cnt // 60))
+                        logger.info("async request for {} times, {} minutes, not finished!".format(async_request_cnt,
+                                                                                                   async_request_cnt // 60))
                 else:
                     break
         else:
@@ -205,8 +206,24 @@ class Server(object):
         with timer("call federated detect", logger):
             federated_detect_param_dict = {
                 "best_model_params": CommonUtils.get_pickle_bytes_by_object_func(cls.best_model_params)}
-            cls.call_async_request(method="call_federated_detect", urls=cls.federated_detect_urls,
-                                   data=federated_detect_param_dict)
+            async_federated_detect_request_result_dict = cls.call_async_request(method="call_federated_detect",
+                                                                                urls=cls.federated_detect_urls,
+                                                                                data=federated_detect_param_dict)
+
+            # receive the log and json files from clients
+            for idx, federated_detect_url in enumerate(cls.federated_detect_urls):
+                for result_key in async_federated_detect_request_result_dict[federated_detect_url]:
+                    if ".log" in result_key:
+                        client_log_file_path = os.path.join(args.log_folder_path, result_key)
+                        with timer("writing to {}".format(client_log_file_path), logger):
+                            with open(client_log_file_path, mode="w", encoding="utf-8") as fl:
+                                fl.write(async_federated_detect_request_result_dict[federated_detect_url][result_key])
+                    elif ".json" in result_key:
+                        client_submission_file_path = os.path.join(args.log_folder_path, result_key)
+                        with timer("writing to {}".format(client_submission_file_path), logger):
+                            CommonUtils.get_json_file_by_object_func(
+                                target=async_federated_detect_request_result_dict[federated_detect_url][result_key],
+                                write_file_path=client_submission_file_path)
 
 
 if __name__ == "__main__":
