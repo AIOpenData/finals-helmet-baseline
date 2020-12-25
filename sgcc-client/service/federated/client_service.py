@@ -41,19 +41,17 @@ class Client(object):
     # add device, model and log file path arguments
     args.device = torch.device("cuda:0" if (torch.cuda.is_available() and args.gpu != -1) else "cpu")
 
-    args.model_file_path = os.path.join(args.model_folder_path,
-                                        "D_{}_M_{}_SE_{}_CE_{}_ID_{}.pkl".format(args.dataset, args.model,
-                                                                                 args.server_epoch, args.client_epoch,
-                                                                                 args.user_id))
-    args.log_file_path = os.path.join(args.log_folder_path,
-                                      "D_{}_M_{}_SE_{}_CE_{}_ID_{}.log".format(args.dataset, args.model,
-                                                                               args.server_epoch, args.client_epoch,
-                                                                               args.user_id))
-    args.submission_file_path = os.path.join(args.log_folder_path,
-                                             "D_{}_M_{}_SE_{}_CE_{}_ID_{}.json".format(args.dataset, args.model,
-                                                                                       args.server_epoch,
-                                                                                       args.client_epoch,
-                                                                                       args.user_id))
+    args.model_file_name = "D_{}_M_{}_SE_{}_CE_{}_ID_{}.pkl".format(args.dataset, args.model, args.server_epoch,
+                                                                    args.client_epoch, args.user_id)
+    args.model_file_path = os.path.join(args.model_folder_path, args.model_file_name)
+
+    args.log_file_name = "D_{}_M_{}_SE_{}_CE_{}_ID_{}.log".format(args.dataset, args.model, args.server_epoch,
+                                                                  args.client_epoch, args.user_id)
+    args.log_file_path = os.path.join(args.log_folder_path, args.log_file_name)
+
+    args.submission_file_name = "D_{}_M_{}_SE_{}_CE_{}_ID_{}.json".format(args.dataset, args.model, args.server_epoch,
+                                                                          args.client_epoch, args.user_id)
+    args.submission_file_path = os.path.join(args.log_folder_path, args.submission_file_name)
 
     # initialize log output configuration
     logger.add(args.log_file_path)
@@ -257,8 +255,9 @@ class Client(object):
                 CommonUtils.get_json_file_by_object_func(target=annotation_list,
                                                          write_file_path=args.submission_file_path)
 
-            return ResultUtils.success(data=CommonUtils.get_pickle_bytes_by_object_func({"detect": True}),
-                                       media_type="application/octet-stream")
+        return ResultUtils.success(data=CommonUtils.get_pickle_bytes_by_object_func(
+            {args.log_file_name: open(args.log_file_path, mode="r", encoding="utf-8").read(),
+             args.submission_file_name: annotation_list}), media_type="application/octet-stream")
 
 
 if __name__ == "__main__":
